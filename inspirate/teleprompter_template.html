@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bundled markdown library -->
+    <script src="marked.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 28px;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.90);
+            background: #0F0F17;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            letter-spacing: 0.3px;
+        }
+
+        /* Spacers for top/bottom so text starts at center */
+        .spacer-top {
+            height: 45vh;
+        }
+
+        .spacer-bottom {
+            height: 55vh;
+        }
+
+        #content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* Gradient overlays (fixed) */
+        .gradient-top,
+        .gradient-bottom {
+            position: fixed;
+            left: 0;
+            right: 0;
+            height: 80px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .gradient-top {
+            top: 0;
+            background: linear-gradient(to bottom, #0F0F17, transparent);
+        }
+
+        .gradient-bottom {
+            bottom: 0;
+            background: linear-gradient(to top, #0F0F17, transparent);
+        }
+
+        /* Center reading marker */
+        .reading-marker {
+            position: fixed;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.06);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .reading-marker::before {
+            content: '▶';
+            position: absolute;
+            left: 8px;
+            top: -10px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .reading-marker::after {
+            content: '◀';
+            position: absolute;
+            right: 8px;
+            top: -10px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 1.6em;
+            font-weight: 700;
+            margin: 28px 0 16px;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        h2 {
+            font-size: 1.35em;
+            font-weight: 700;
+            margin: 24px 0 14px;
+            color: rgba(255, 255, 255, 0.93);
+        }
+
+        h3 {
+            font-size: 1.15em;
+            font-weight: 600;
+            margin: 20px 0 12px;
+            color: rgba(255, 255, 255, 0.93);
+        }
+
+        h4,
+        h5,
+        h6 {
+            font-size: 1em;
+            font-weight: 600;
+            margin: 16px 0 10px;
+            color: rgba(255, 255, 255, 0.88);
+        }
+
+        p {
+            margin: 0 0 18px;
+        }
+
+        strong {
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        em {
+            font-style: italic;
+        }
+
+        a {
+            color: #5AC8FA;
+            text-decoration: none;
+        }
+
+        /* Images */
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 20px 0;
+            opacity: 0.85;
+        }
+
+        /* Code */
+        code {
+            font-family: 'SF Mono', Menlo, monospace;
+            font-size: 0.8em;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #F39C12;
+        }
+
+        pre {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Blockquotes */
+        blockquote {
+            border-left: 3px solid rgba(255, 255, 255, 0.15);
+            padding: 8px 16px;
+            margin: 16px 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+        }
+
+        blockquote p {
+            margin: 0;
+        }
+
+        /* Lists */
+        ul,
+        ol {
+            margin: 8px 0 14px 24px;
+        }
+
+        li {
+            margin: 4px 0;
+        }
+
+        /* Tables */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            font-size: 0.85em;
+        }
+
+        th,
+        td {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.06);
+            font-weight: 600;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 24px 0;
+        }
+
+        /* Checklist */
+        li input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        /* GitHub-style alerts */
+        .alert-box {
+            border-left: 4px solid;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .alert-box .alert-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .alert-box p {
+            margin: 4px 0;
+        }
+
+        .alert-note {
+            border-color: #5AC8FA;
+            background: rgba(90, 200, 250, 0.08);
+        }
+
+        .alert-note .alert-title {
+            color: #5AC8FA;
+        }
+
+        .alert-tip {
+            border-color: #34C759;
+            background: rgba(52, 199, 89, 0.08);
+        }
+
+        .alert-tip .alert-title {
+            color: #34C759;
+        }
+
+        .alert-important {
+            border-color: #AF52DE;
+            background: rgba(175, 82, 222, 0.08);
+        }
+
+        .alert-important .alert-title {
+            color: #AF52DE;
+        }
+
+        .alert-warning {
+            border-color: #FF9F0A;
+            background: rgba(255, 159, 10, 0.08);
+        }
+
+        .alert-warning .alert-title {
+            color: #FF9F0A;
+        }
+
+        .alert-caution {
+            border-color: #FF3B30;
+            background: rgba(255, 59, 48, 0.08);
+        }
+
+        .alert-caution .alert-title {
+            color: #FF3B30;
+        }
+
+        mark {
+            background: rgba(255, 230, 0, 0.25);
+            padding: 1px 4px;
+            border-radius: 2px;
+        }
+
+        del {
+            text-decoration: line-through;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Scrollbar hidden for clean look */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gradient-top"></div>
+    <div class="gradient-bottom"></div>
+    <div class="reading-marker"></div>
+
+    <div class="spacer-top"></div>
+    <div id="content"></div>
+    <div class="spacer-bottom"></div>
+
+    <script>
+        // Color name → CSS color map
+        const colorMap = {
+            red: '#FF3B30', orange: '#FF9F0A', yellow: '#FFCC00', green: '#34C759',
+            blue: '#007AFF', purple: '#AF52DE', pink: '#FF2D55', brown: '#A2845E',
+            cyan: '#32ADE6', teal: '#30B0C7', indigo: '#5856D6', mint: '#00C7BE',
+            gray: '#8E8E93', white: '#FFFFFF', black: '#000000', magenta: '#FF00FF',
+            crimson: '#DC143C', coral: '#FF7F50', salmon: '#FA8072', gold: '#FFD700',
+            lime: '#00FF00', emerald: '#50C878', forest: '#228B22', sky: '#87CEEB',
+            navy: '#000080', violet: '#8F00FF', rose: '#FF0080', lavender: '#B57EDC',
+            peach: '#FFD9BA', maroon: '#800000', olive: '#808000', aqua: '#00FFFF'
+        };
+
+        // Emoji shortcodes
+        const emojiMap = {
+            smile: '😊', laughing: '😆', joy: '😂', heart: '❤️', thumbsup: '👍',
+            thumbsdown: '👎', fire: '🔥', star: '⭐', check: '✅', x: '❌',
+            warning: '⚠️', info: 'ℹ️', question: '❓', exclamation: '❗',
+            rocket: '🚀', bulb: '💡', memo: '📝', book: '📖', link: '🔗',
+            lock: '🔒', unlock: '🔓', key: '🔑', gear: '⚙️', wrench: '🔧',
+            hammer: '🔨', pin: '📌', flag: '🚩', bell: '🔔', clock: '🕐',
+            calendar: '📅', folder: '📁', file: '📄', trash: '🗑️',
+            search: '🔍', eye: '👁️', sparkles: '✨', zap: '⚡',
+            bug: '🐛', tada: '🎉', wave: '👋', point_right: '👉',
+            thinking: '🤔', clap: '👏', muscle: '💪', pray: '🙏',
+            coffee: '☕', pizza: '🍕', beer: '🍺', trophy: '🏆',
+            '+1': '👍', '-1': '👎', '100': '💯',
+            red_circle: '🔴', yellow_circle: '🟡', green_circle: '🟢',
+            large_blue_circle: '🔵', blue_circle: '🔵', purple_circle: '🟣',
+            orange_circle: '🟠', white_circle: '⚪', black_circle: '⚫', brown_circle: '🟤'
+        };
+
+        function resolveColor(name) {
+            const lower = name.toLowerCase().trim();
+            if (colorMap[lower]) return colorMap[lower];
+            if (lower.startsWith('#')) return lower;
+            return null;
+        }
+
+        function preprocessMarkdown(md) {
+            // ::bg-color::text:: → background highlight
+            md = md.replace(/::bg-([a-zA-Z]+|#[0-9a-fA-F]{3,8})::(.+?)::/g, (m, color, text) => {
+                const c = resolveColor(color);
+                if (!c) return m;
+                return `<span style="background:${c}33;padding:1px 4px;border-radius:3px">${text}</span>`;
+            });
+            // ::color::text:: → foreground color (skip bg-)
+            md = md.replace(/::(?!bg-)([a-zA-Z]+|#[0-9a-fA-F]{3,8})::(.+?)::/g, (m, color, text) => {
+                const c = resolveColor(color);
+                if (!c) return m;
+                return `<span style="color:${c}">${text}</span>`;
+            });
+            // {bg-color}text{/bg-color}
+            md = md.replace(/\{bg-([a-zA-Z]+|#[0-9a-fA-F]{3,8})\}(.+?)\{\/bg-\1\}/g, (m, color, text) => {
+                const c = resolveColor(color);
+                if (!c) return m;
+                return `<span style="background:${c}33;padding:1px 4px;border-radius:3px">${text}</span>`;
+            });
+            // {color}text{/color}
+            md = md.replace(/\{(?!bg-)([a-zA-Z]+|#[0-9a-fA-F]{3,8})\}(.+?)\{\/\1\}/g, (m, color, text) => {
+                const c = resolveColor(color);
+                if (!c) return m;
+                return `<span style="color:${c}">${text}</span>`;
+            });
+            // :emoji:
+            md = md.replace(/:([a-z0-9_+-]+):/g, (m, name) => emojiMap[name] || m);
+            // GitHub alerts
+            md = md.replace(/^(> *)\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(.*)?$/gm, (m, gt, type, rest) => {
+                const icons = { NOTE: 'ℹ️', TIP: '💡', IMPORTANT: '❗', WARNING: '⚠️', CAUTION: '🔴' };
+                const extra = rest ? '\n' + gt + rest : '';
+                return `${gt}<div class="alert-box alert-${type.toLowerCase()}"><div class="alert-title">${icons[type] || ''} ${type}</div>${extra}`;
+            });
+            // Close alert blocks
+            const lines = md.split('\n');
+            let inAlert = false;
+            const result = [];
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.match(/<div class="alert-box/)) {
+                    inAlert = true;
+                    result.push(line);
+                } else if (inAlert && !line.startsWith('>')) {
+                    result.push('</div>\n' + line);
+                    inAlert = false;
+                } else if (inAlert && line.startsWith('>')) {
+                    result.push(line.replace(/^>\s?/, ''));
+                } else {
+                    result.push(line);
+                }
+            }
+            if (inAlert) result.push('</div>');
+            return result.join('\n');
+        }
+
+        // Configure marked.js
+        if (typeof marked !== 'undefined') {
+            const renderer = new marked.Renderer();
+
+            renderer.code = function (code, language) {
+                if (typeof code === 'object') { language = code.lang; code = code.text; }
+                return '<pre><code>' + code.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</code></pre>';
+            };
+
+            marked.use({ renderer: renderer, gfm: true, breaks: true });
+        }
+
+        function renderMarkdown(md) {
+            const el = document.getElementById('content');
+            if (!el) return;
+
+            md = preprocessMarkdown(md);
+
+            if (typeof marked !== 'undefined') {
+                el.innerHTML = marked.parse(md);
+            } else {
+                el.innerText = md;
+            }
+        }
+
+        // --- AUTO-SCROLL ENGINE ---
+        let scrollInterval = null;
+        let currentSpeed = 35; // pixels per second
+
+        function startScroll(speed) {
+            stopScroll();
+            currentSpeed = speed || currentSpeed;
+            scrollInterval = setInterval(function () {
+                window.scrollBy(0, currentSpeed / 60.0);
+                // Check if we reached the bottom
+                if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 50) {
+                    stopScroll();
+                    // Notify Swift
+                    window.webkit.messageHandlers.teleprompterEvent.postMessage('ended');
+                }
+            }, 1000 / 60);
+        }
+
+        function stopScroll() {
+            if (scrollInterval) {
+                clearInterval(scrollInterval);
+                scrollInterval = null;
+            }
+        }
+
+        function setSpeed(speed) {
+            currentSpeed = speed;
+            // If currently scrolling, restart with new speed
+            if (scrollInterval) {
+                startScroll(speed);
+            }
+        }
+
+        function setFontSize(px) {
+            document.body.style.fontSize = px + 'px';
+        }
+
+        function resetScroll() {
+            stopScroll();
+            window.scrollTo(0, 0);
+        }
+
+        function isScrolling() {
+            return scrollInterval !== null;
+        }
+    </script>
+</body>
+
+</html>

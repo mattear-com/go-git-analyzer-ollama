@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bundled libraries loaded from same directory -->
+    <link rel="stylesheet" href="katex.min.css">
+    <link rel="stylesheet" href="highlight-github.min.css">
+    <script src="marked.min.js"></script>
+    <script src="katex.min.js"></script>
+    <script src="katex-auto-render.min.js"></script>
+    <script src="highlight.min.js"></script>
+    <script src="mermaid.min.js"></script>
+    <script src="chart.min.js"></script>
+    <script src="arquero.min.js"></script>
+
+    <style>
+        :root {
+            --bg: #FAFAF8;
+            --text: #2C2C2E;
+            --text-secondary: #8E8E93;
+            --accent: #007AFF;
+            --border: #E5E5EA;
+            --code-bg: #F2F2F7;
+            --blockquote-border: #D1D1D6;
+            --table-border: #E5E5EA;
+            --table-header-bg: #F2F2F7;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1C1C1E;
+                --text: #F2F2F7;
+                --text-secondary: #8E8E93;
+                --accent: #0A84FF;
+                --border: #38383A;
+                --code-bg: #2C2C2E;
+                --blockquote-border: #48484A;
+                --table-border: #38383A;
+                --table-header-bg: #2C2C2E;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            padding: 40px 48px 200px 48px;
+            max-width: 800px;
+            margin: 0 auto;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 32px 0 16px;
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 28px 0 14px;
+            letter-spacing: -0.3px;
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 24px 0 12px;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 20px 0 10px;
+        }
+
+        h5 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 16px 0 8px;
+        }
+
+        h6 {
+            font-size: 15px;
+            font-weight: 600;
+            margin: 14px 0 8px;
+            color: var(--text-secondary);
+        }
+
+        h1:first-child {
+            margin-top: 0;
+        }
+
+        p {
+            margin: 0 0 14px;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        strong {
+            font-weight: 600;
+        }
+
+        code {
+            font-family: 'SF Mono', Menlo, monospace;
+            font-size: 13px;
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #D35400;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            code {
+                color: #F39C12;
+            }
+        }
+
+        pre {
+            background: var(--code-bg);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        blockquote {
+            border-left: 3px solid var(--blockquote-border);
+            padding: 8px 16px;
+            margin: 16px 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        blockquote p {
+            margin: 0;
+        }
+
+        ul,
+        ol {
+            margin: 8px 0 14px 24px;
+        }
+
+        li {
+            margin: 4px 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--table-border);
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--table-header-bg);
+            font-weight: 600;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 24px 0;
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 16px 0;
+            display: block;
+        }
+
+        img.img-s {
+            max-width: 25%;
+        }
+
+        img.img-m {
+            max-width: 50%;
+        }
+
+        img.img-l {
+            max-width: 75%;
+        }
+
+        .katex-display {
+            margin: 16px 0;
+            overflow-x: auto;
+        }
+
+        .mermaid {
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        mark {
+            background: rgba(255, 230, 0, 0.3);
+            padding: 1px 4px;
+            border-radius: 2px;
+        }
+
+        del {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        /* #Tags */
+        .tag {
+            color: #AF52DE;
+            background: rgba(175, 82, 222, 0.12);
+            font-weight: 600;
+            font-size: 14px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .tag:hover {
+            background: rgba(175, 82, 222, 0.25);
+        }
+
+        .tag .hash {
+            opacity: 0.5;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .tag {
+                color: #BF5AF2;
+                background: rgba(191, 90, 242, 0.15);
+            }
+
+            .tag:hover {
+                background: rgba(191, 90, 242, 0.3);
+            }
+        }
+
+        /* GitHub-style alerts */
+        .alert-box {
+            border-left: 4px solid;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .alert-box .alert-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .alert-box p {
+            margin: 4px 0;
+        }
+
+        .alert-note {
+            border-color: #007AFF;
+            background: rgba(0, 122, 255, 0.06);
+        }
+
+        .alert-note .alert-title {
+            color: #007AFF;
+        }
+
+        .alert-tip {
+            border-color: #34C759;
+            background: rgba(52, 199, 89, 0.06);
+        }
+
+        .alert-tip .alert-title {
+            color: #34C759;
+        }
+
+        .alert-important {
+            border-color: #AF52DE;
+            background: rgba(175, 82, 222, 0.06);
+        }
+
+        .alert-important .alert-title {
+            color: #AF52DE;
+        }
+
+        .alert-warning {
+            border-color: #FF9F0A;
+            background: rgba(255, 159, 10, 0.06);
+        }
+
+        .alert-warning .alert-title {
+            color: #FF9F0A;
+        }
+
+        .alert-caution {
+            border-color: #FF3B30;
+            background: rgba(255, 59, 48, 0.06);
+        }
+
+        .alert-caution .alert-title {
+            color: #FF3B30;
+        }
+
+        /* Alignment */
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-center img {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .text-right img {
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-justify {
+            text-align: justify;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="content"></div>
+
+    <script>
+        // Initialize Mermaid
+        if (typeof mermaid !== 'undefined') {
+            mermaid.initialize({
+                startOnLoad: false,
+                theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
+                securityLevel: 'loose',
+                fontFamily: '-apple-system, BlinkMacSystemFont, SF Pro Text, sans-serif'
+            });
+        }
+
+        // Configure marked.js
+        if (typeof marked !== 'undefined') {
+            // Convert simplified ER syntax to Mermaid erDiagram
+            function convertERToMermaid(code) {
+                // If already valid Mermaid erDiagram syntax, pass through
+                if (code.trim().startsWith('erDiagram')) return code;
+                const relMap = {
+                    '1--*': '||--o{', '*--1': '}o--||',
+                    '*--*': '}o--o{', '1--1': '||--||',
+                    '1--+': '||--|{', '+--1': '}|--||',
+                    '0--*': '|o--o{', '*--0': '}o--o|',
+                    '0--1': '|o--||', '1--0': '||--o|'
+                };
+                const lines = code.split('\n');
+                const converted = ['erDiagram'];
+                for (const line of lines) {
+                    const trimmed = line.trim();
+                    if (!trimmed) continue;
+                    // Match: [Entity1] rel [Entity2] or [Entity1] rel [Entity2] : label
+                    const m = trimmed.match(/^\[([^\]]+)\]\s*([\d\*\+]+--[\d\*\+]+)\s*\[([^\]]+)\](?:\s*:\s*(.+))?$/);
+                    if (m) {
+                        const e1 = m[1].replace(/\s+/g, '_');
+                        const rel = relMap[m[2]] || '||--o{';
+                        const e2 = m[3].replace(/\s+/g, '_');
+                        const label = m[4] ? m[4].trim() : 'relates';
+                        converted.push(`    ${e1} ${rel} ${e2} : "${label}"`);
+                    } else {
+                        // Pass through raw lines (might be valid Mermaid already)
+                        converted.push('    ' + trimmed);
+                    }
+                }
+                return converted.join('\n');
+            }
+
+            const renderer = new marked.Renderer();
+
+            renderer.code = function (code, language) {
+                if (typeof code === 'object') { language = code.lang; code = code.text; }
+                const lang = (language || '').toLowerCase().trim();
+
+                if (['mermaid', 'sequence', 'flowchart', 'gantt', 'er', 'erd', 'plantuml', 'diagram'].includes(lang)) {
+                    let mermaidCode = code;
+                    if (lang === 'er' || lang === 'erd') {
+                        mermaidCode = convertERToMermaid(code);
+                    }
+                    return '<div class="mermaid">' + mermaidCode + '</div>';
+                }
+                if (['math', 'latex', 'katex', 'tex'].includes(lang)) {
+                    return '<div class="katex-display-block">' + code + '</div>';
+                }
+                if (typeof hljs !== 'undefined' && lang && hljs.getLanguage(lang)) {
+                    try { return '<pre><code class="hljs language-' + lang + '">' + hljs.highlight(code, { language: lang }).value + '</code></pre>'; } catch (e) { }
+                }
+                if (typeof hljs !== 'undefined') {
+                    return '<pre><code class="hljs">' + hljs.highlightAuto(code).value + '</code></pre>';
+                }
+                return '<pre><code>' + code.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</code></pre>';
+            };
+
+            // Custom image renderer: supports ![alt|S](url), ![alt|M](url), ![alt|L](url)
+            renderer.image = function (token) {
+                let href, title, text;
+                if (typeof token === 'object') {
+                    href = token.href; title = token.title; text = token.text;
+                } else {
+                    href = token; title = arguments[2]; text = arguments[1];
+                }
+                let sizeClass = '';
+                if (text) {
+                    const sizeMatch = text.match(/^(.*)\|([SMLsml])$/);
+                    if (sizeMatch) {
+                        text = sizeMatch[1];
+                        const size = sizeMatch[2].toUpperCase();
+                        if (size === 'S') sizeClass = 'img-s';
+                        else if (size === 'M') sizeClass = 'img-m';
+                        else if (size === 'L') sizeClass = 'img-l';
+                    }
+                }
+                const alt = text ? ` alt="${text}"` : '';
+                const t = title ? ` title="${title}"` : '';
+                const cls = sizeClass ? ` class="${sizeClass}"` : '';
+                return `<img src="${href}"${alt}${t}${cls}>`;
+            };
+
+            marked.use({ renderer: renderer, gfm: true, breaks: true });
+        }
+
+        // Color name → CSS color map
+        const colorMap = {
+            red: '#FF3B30', orange: '#FF9F0A', yellow: '#FFCC00', green: '#34C759',
+            blue: '#007AFF', purple: '#AF52DE', pink: '#FF2D55', brown: '#A2845E',
+            cyan: '#32ADE6', teal: '#30B0C7', indigo: '#5856D6', mint: '#00C7BE',
+            gray: '#8E8E93', white: '#FFFFFF', black: '#000000', magenta: '#FF00FF',
+            crimson: '#DC143C', coral: '#FF7F50', salmon: '#FA8072', gold: '#FFD700',
+            lime: '#00FF00', emerald: '#50C878', forest: '#228B22', sky: '#87CEEB',
+            navy: '#000080', violet: '#8F00FF', rose: '#FF0080', lavender: '#B57EDC',
+            peach: '#FFD9BA', maroon: '#800000', olive: '#808000', aqua: '#00FFFF'
+        };
+
+        // Emoji shortcodes
+        const emojiMap = {
+            smile: '😊', laughing: '😆', joy: '😂', heart: '❤️', thumbsup: '👍',
+            thumbsdown: '👎', fire: '🔥', star: '⭐', check: '✅', x: '❌',
+            warning: '⚠️', info: 'ℹ️', question: '❓', exclamation: '❗',
+            rocket: '🚀', bulb: '💡', memo: '📝', book: '📖', link: '🔗',
+            lock: '🔒', unlock: '🔓', key: '🔑', gear: '⚙️', wrench: '🔧',
+            hammer: '🔨', pin: '📌', flag: '🚩', bell: '🔔', clock: '🕐',
+            calendar: '📅', folder: '📁', file: '📄', trash: '🗑️',
+            search: '🔍', eye: '👁️', sparkles: '✨', zap: '⚡',
+            bug: '🐛', tada: '🎉', wave: '👋', point_right: '👉',
+            thinking: '🤔', clap: '👏', muscle: '💪', pray: '🙏',
+            coffee: '☕', pizza: '🍕', beer: '🍺', trophy: '🏆',
+            '+1': '👍', '-1': '👎', '100': '💯',
+            red_circle: '🔴', yellow_circle: '🟡', green_circle: '🟢',
+            large_blue_circle: '🔵', blue_circle: '🔵', purple_circle: '🟣',
+            orange_circle: '🟠', white_circle: '⚪', black_circle: '⚫', brown_circle: '🟤'
+        };
+
+        function resolveColor(name) {
+            const lower = name.toLowerCase().trim();
+            if (colorMap[lower]) return colorMap[lower];
+            if (lower.startsWith('#')) return lower;
+            return null;
+        }
+
+        function preprocessMarkdown(md) {
+            const parseInline = (text) => (typeof marked !== 'undefined' && marked.parseInline) ? marked.parseInline(text) : text;
+            // ::bg-color::text:: → background highlight
+            md = md.replace(/::bg-([a-zA-Z]+|#[0-9a-fA-F]{3,8})::(.+?)::/g, (m, color, text) => {
+                const c = resolveColor(color);
+                if (!c) return m;
+                return `<span style="background:${c}33;padding:1px 4px;border-radius:3px">${parseInline(text)}</span>`;
+            });
+            // ::color::text:: → foreground color (skip bg-)
+            md = md.replace(/::(?!bg-)([a-zA-Z]+|#[0-9a-fA-F]{3,8})::(.+?)::/g, (m, color, text) => {
+                const c = resolveColor(color);
+                if (!c) return m;
+                return `<span style="color:${c}">${parseInline(text)}</span>`;
+            });
+            // {bg-color}text{/bg-color} → shorthand background
+            md = md.replace(/\{bg-([a-zA-Z]+|#[0-9a-fA-F]{3,8})\}(.+?)\{\/bg-\1\}/g, (m, color, text) => {
+                const c = resolveColor(color);
+                if (!c) return m;
+                return `<span style="background:${c}33;padding:1px 4px;border-radius:3px">${parseInline(text)}</span>`;
+            });
+            // {color}text{/color} → shorthand foreground
+            md = md.replace(/\{(?!bg-)([a-zA-Z]+|#[0-9a-fA-F]{3,8})\}(.+?)\{\/\1\}/g, (m, color, text) => {
+                const c = resolveColor(color);
+                if (!c) return m;
+                return `<span style="color:${c}">${parseInline(text)}</span>`;
+            });
+            // :emoji: shortcodes
+            md = md.replace(/:([a-z0-9_+-]+):/g, (m, name) => emojiMap[name] || m);
+            // {al-right}text{al-right}, {al-center}, {al-left}, {al-justify}
+            // Merge consecutive same-alignment lines into one block
+            // Use blank lines inside the div so marked.parse() processes inner markdown natively
+            md = md.replace(/(^\{al-(right|center|left|justify)\}\s*.+?\s*\{al-\2\}\s*\n?)+/gm, (block) => {
+                const lineRegex = /^\{al-(right|center|left|justify)\}\s*(.+?)\s*\{al-\1\}\s*$/gm;
+                let align = '';
+                const texts = [];
+                let m;
+                while ((m = lineRegex.exec(block)) !== null) {
+                    align = m[1];
+                    texts.push(m[2].trim());
+                }
+                if (!align || texts.length === 0) return block;
+                const innerContent = texts.join('\n');
+                return `\n<div class="text-${align}">\n\n${innerContent}\n\n</div>\n\n`;
+            });
+            // GitHub alerts: > [!TYPE] optional text
+            md = md.replace(/^(> *)\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(.*)?$/gm, (m, gt, type, rest) => {
+                const icons = { NOTE: 'ℹ️', TIP: '💡', IMPORTANT: '❗', WARNING: '⚠️', CAUTION: '🔴' };
+                const extra = rest ? '\n' + gt + rest : '';
+                return `${gt}<div class="alert-box alert-${type.toLowerCase()}"><div class="alert-title">${icons[type] || ''} ${type}</div>${extra}`;
+            });
+            // Close alert blocks at the end of blockquote sequences
+            const lines = md.split('\n');
+            let inAlert = false;
+            const result = [];
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.match(/<div class="alert-box/)) {
+                    inAlert = true;
+                    result.push(line);
+                } else if (inAlert && !line.startsWith('>')) {
+                    result.push('</div>\n' + line);
+                    inAlert = false;
+                } else if (inAlert && line.startsWith('>')) {
+                    result.push(line.replace(/^>\s?/, ''));
+                } else {
+                    result.push(line);
+                }
+            }
+            if (inAlert) result.push('</div>');
+            return result.join('\n');
+        }
+
+        async function renderMarkdown(md) {
+            const el = document.getElementById('content');
+            if (!el) return;
+
+            md = preprocessMarkdown(md);
+
+            if (typeof marked !== 'undefined') {
+                el.innerHTML = marked.parse(md);
+            } else {
+                el.innerText = md;
+                return;
+            }
+
+            // KaTeX
+            if (typeof katex !== 'undefined') {
+                document.querySelectorAll('.katex-display-block').forEach(b => {
+                    try { katex.render(b.textContent, b, { displayMode: true, throwOnError: false }); } catch (e) { }
+                });
+                if (typeof renderMathInElement !== 'undefined') {
+                    renderMathInElement(el, {
+                        delimiters: [
+                            { left: '$$', right: '$$', display: true },
+                            { left: '$', right: '$', display: false }
+                        ],
+                        throwOnError: false
+                    });
+                }
+            }
+
+            // Style #tags in rendered content
+            function styleTags(el) {
+                const entities = window._entityData || [];
+                const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+                const textNodes = [];
+                while (walker.nextNode()) {
+                    // Skip code/pre/mermaid elements
+                    const parent = walker.currentNode.parentNode;
+                    if (parent && ['CODE', 'PRE', 'SCRIPT', 'STYLE'].includes(parent.tagName)) continue;
+                    if (parent && parent.closest && parent.closest('.mermaid')) continue;
+                    textNodes.push(walker.currentNode);
+                }
+                textNodes.forEach(node => {
+                    const text = node.textContent;
+                    if (!text.match(/(^|\s)#[\w\u00C0-\u024F]+/)) return;
+                    const parts = text.split(/((?:^|\s)#[\w\u00C0-\u024F]+)/g);
+                    if (parts.length <= 1) return;
+                    const frag = document.createDocumentFragment();
+                    parts.forEach(part => {
+                        const m = part.match(/^(\s?)#([\w\u00C0-\u024F]+)$/);
+                        if (m) {
+                            if (m[1]) frag.appendChild(document.createTextNode(m[1]));
+                            const tagName = m[2];
+                            const span = document.createElement('span');
+                            span.className = 'tag';
+
+                            // Find matching entity for color
+                            const entity = entities.find(e => {
+                                if (e.tags && e.tags.some(t => t.toLowerCase() === tagName.toLowerCase())) return true;
+                                if (e.name && e.name.replace(/\s/g, '').toLowerCase() === tagName.toLowerCase()) return true;
+                                return false;
+                            });
+                            if (entity && entity.color) {
+                                span.style.color = entity.color;
+                                span.style.background = entity.color + '1F'; // ~12% opacity
+                            }
+
+                            span.innerHTML = '<span class="hash">#</span>' + tagName;
+                            frag.appendChild(span);
+                        } else {
+                            frag.appendChild(document.createTextNode(part));
+                        }
+                    });
+                    node.parentNode.replaceChild(frag, node);
+                });
+            }
+
+            // Mermaid
+            if (typeof mermaid !== 'undefined') {
+                try {
+                    const nodes = document.querySelectorAll('.mermaid');
+                    if (nodes.length > 0) {
+                        nodes.forEach((n, i) => { n.removeAttribute('data-processed'); n.id = 'mermaid-' + i; });
+                        await mermaid.run({ nodes: nodes });
+                    }
+                } catch (e) { console.warn('Mermaid:', e); }
+            }
+
+            // Apply tag styling last
+            styleTags(el);
+
+            // Activate <script> tags if allowed
+            activateScripts(el);
+
+            // If scripts disabled, replace script blocks with disabled indicator
+            if (!window._allowScripts) {
+                el.querySelectorAll('script').forEach(s => {
+                    const indicator = document.createElement('div');
+                    indicator.style.cssText = 'display:flex;align-items:center;gap:6px;padding:6px 12px;border:1.5px dashed var(--border);border-radius:6px;color:var(--text-secondary);font-size:12px;font-family:monospace;opacity:0.5;margin:8px 0';
+                    indicator.textContent = '🚫 Scripts disabled';
+                    s.parentNode.replaceChild(indicator, s);
+                });
+            }
+        }
+
+        function scrollToFraction(f) {
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            if (max > 0) window.scrollTo(0, max * f);
+        }
+
+        // Script execution support
+        window._allowScripts = false;
+
+        function setAllowScripts(allow) {
+            window._allowScripts = !!allow;
+        }
+
+        function activateScripts(container) {
+            if (!window._allowScripts) return;
+            const scripts = container.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                // Copy attributes
+                for (const attr of oldScript.attributes) {
+                    newScript.setAttribute(attr.name, attr.value);
+                }
+                // Copy inline content
+                newScript.textContent = oldScript.textContent;
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+        }
+
+        // ── VEditor JS API Bridge ──────────────────────────────
+        // Exposes window.veditor for embedded scripts to access project data
+        window.veditor = {
+            _callbacks: {},
+            _nextId: 1,
+            _call(action, params) {
+                return new Promise(resolve => {
+                    const id = this._nextId++;
+                    this._callbacks[id] = resolve;
+                    try {
+                        webkit.messageHandlers.veditorAPI.postMessage(
+                            JSON.stringify({ action, callbackId: id, ...(params || {}) })
+                        );
+                    } catch (e) {
+                        delete this._callbacks[id];
+                        resolve(null);
+                    }
+                });
+            },
+            /** Get raw markdown content of the current document */
+            getDocumentContent() { return this._call('getDocumentContent'); },
+            /** Get list of all documents: [{id, title, wordCount, status, synopsis}] */
+            getDocumentList() { return this._call('getDocumentList'); },
+            /** Get project entities: [{name, category, color, tags, notes}] */
+            getEntities() { return this._call('getEntities'); },
+            /** Get project info: {name, author, totalWords, documentCount} */
+            getProjectInfo() { return this._call('getProjectInfo'); },
+            /** Show a notification message to the user */
+            notify(msg) {
+                try {
+                    webkit.messageHandlers.veditorAPI.postMessage(
+                        JSON.stringify({ action: 'notify', message: msg })
+                    );
+                } catch (e) { console.warn('VEditor API not available'); }
+            }
+        };
+        /** Called from Swift to resolve pending promises */
+        function _veditorCallback(id, data) {
+            if (window.veditor._callbacks[id]) {
+                window.veditor._callbacks[id](data);
+                delete window.veditor._callbacks[id];
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!-- Same bundled libraries as markdown_template.html -->
+    <link rel="stylesheet" href="katex.min.css">
+    <link rel="stylesheet" href="highlight-github.min.css">
+    <script src="marked.min.js"></script>
+    <script src="katex.min.js"></script>
+    <script src="katex-auto-render.min.js"></script>
+    <script src="highlight.min.js"></script>
+    <script src="mermaid.min.js"></script>
+    <script src="chart.min.js"></script>
+    <script src="arquero.min.js"></script>
+
+    <style>
+        :root {
+            --bg: #FAFAF8;
+            --text: #2C2C2E;
+            --text-secondary: #8E8E93;
+            --accent: #007AFF;
+            --border: #E5E5EA;
+            --code-bg: #F2F2F7;
+            --blockquote-border: #D1D1D6;
+            --table-border: #E5E5EA;
+            --table-header-bg: #F2F2F7;
+            --edit-bg: rgba(0, 122, 255, 0.04);
+            --edit-border: rgba(0, 122, 255, 0.25);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1C1C1E;
+                --text: #F2F2F7;
+                --text-secondary: #8E8E93;
+                --accent: #0A84FF;
+                --border: #38383A;
+                --code-bg: #2C2C2E;
+                --blockquote-border: #48484A;
+                --table-border: #38383A;
+                --table-header-bg: #2C2C2E;
+                --edit-bg: rgba(10, 132, 255, 0.06);
+                --edit-border: rgba(10, 132, 255, 0.3);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            padding: 72px 20px 300px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Rendered paragraph styles — identical to markdown_template.html */
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 32px 0 16px;
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 28px 0 14px;
+            letter-spacing: -0.3px;
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 24px 0 12px;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 20px 0 10px;
+        }
+
+        h5 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 16px 0 8px;
+        }
+
+        h6 {
+            font-size: 15px;
+            font-weight: 600;
+            margin: 14px 0 8px;
+            color: var(--text-secondary);
+        }
+
+        h1:first-child {
+            margin-top: 0;
+        }
+
+        p {
+            margin: 0 0 14px;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        strong {
+            font-weight: 600;
+        }
+
+        code {
+            font-family: 'SF Mono', Menlo, monospace;
+            font-size: 13px;
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #D35400;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            code {
+                color: #F39C12;
+            }
+        }
+
+        pre {
+            background: var(--code-bg);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        blockquote {
+            border-left: 3px solid var(--blockquote-border);
+            padding: 8px 16px;
+            margin: 16px 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        blockquote p {
+            margin: 0;
+        }
+
+        ul,
+        ol {
+            margin: 8px 0 14px 24px;
+        }
+
+        li {
+            margin: 4px 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--table-border);
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--table-header-bg);
+            font-weight: 600;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 24px 0;
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 16px 0;
+            display: block;
+        }
+
+        img.img-s {
+            max-width: 25%;
+        }
+
+        img.img-m {
+            max-width: 50%;
+        }
+
+        img.img-l {
+            max-width: 75%;
+        }
+
+        .katex-display {
+            margin: 16px 0;
+            overflow-x: auto;
+        }
+
+        .mermaid {
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        mark {
+            background: rgba(255, 230, 0, 0.3);
+            padding: 1px 4px;
+            border-radius: 2px;
+        }
+
+        del {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        .tag {
+            color: #AF52DE;
+            background: rgba(175, 82, 222, 0.12);
+            font-weight: 600;
+            font-size: 14px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .tag:hover {
+            background: rgba(175, 82, 222, 0.25);
+        }
+
+        .tag .hash {
+            opacity: 0.5;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .tag {
+                color: #BF5AF2;
+                background: rgba(191, 90, 242, 0.15);
+            }
+
+            .tag:hover {
+                background: rgba(191, 90, 242, 0.3);
+            }
+        }
+
+        .alert-box {
+            border-left: 4px solid;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .alert-box .alert-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .alert-box p {
+            margin: 4px 0;
+        }
+
+        .alert-note {
+            border-color: #007AFF;
+            background: rgba(0, 122, 255, 0.06);
+        }
+
+        .alert-note .alert-title {
+            color: #007AFF;
+        }
+
+        .alert-tip {
+            border-color: #34C759;
+            background: rgba(52, 199, 89, 0.06);
+        }
+
+        .alert-tip .alert-title {
+            color: #34C759;
+        }
+
+        .alert-important {
+            border-color: #AF52DE;
+            background: rgba(175, 82, 222, 0.06);
+        }
+
+        .alert-important .alert-title {
+            color: #AF52DE;
+        }
+
+        .alert-warning {
+            border-color: #FF9F0A;
+            background: rgba(255, 159, 10, 0.06);
+        }
+
+        .alert-warning .alert-title {
+            color: #FF9F0A;
+        }
+
+        .alert-caution {
+            border-color: #FF3B30;
+            background: rgba(255, 59, 48, 0.06);
+        }
+
+        .alert-caution .alert-title {
+            color: #FF3B30;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-center img {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .text-right img {
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-justify {
+            text-align: justify;
+        }
+
+        /* Live editor specific styles */
+        .live-paragraph {
+            cursor: text;
+            border-radius: 6px;
+            padding: 2px 4px;
+            margin: 0 -4px;
+            transition: background 0.15s ease;
+        }
+
+        .live-paragraph:hover {
+            background: var(--edit-bg);
+        }
+
+        .live-paragraph.editing {
+            background: var(--edit-bg);
+            outline: 1.5px solid var(--edit-border);
+            padding: 0;
+            margin: 0 -4px;
+        }
+
+        .live-editor {
+            width: 100%;
+            font-family: 'SF Mono', Menlo, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text);
+            background: transparent;
+            border: none;
+            outline: none;
+            resize: none;
+            padding: 8px;
+            overflow: hidden;
+        }
+
+        .edit-hint {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--accent);
+            padding: 2px 8px;
+            opacity: 0.7;
+        }
+
+        .empty-hint {
+            color: var(--text-secondary);
+            font-style: italic;
+            padding: 8px 4px;
+            cursor: text;
+        }
+
+        .insert-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 2px 0;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .live-paragraph.editing:hover .insert-row,
+        .live-paragraph.editing .insert-row:focus-within {
+            opacity: 1;
+        }
+
+        .insert-btn-inner {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--accent);
+            background: var(--edit-bg);
+            border: 1px solid var(--edit-border);
+            border-radius: 10px;
+            padding: 1px 10px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .insert-btn-inner:hover {
+            background: var(--edit-border);
+        }
+
+        .ai-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #AF52DE, #5856D6);
+            border: none;
+            border-radius: 10px;
+            padding: 2px 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .ai-action-btn:hover {
+            filter: brightness(1.15);
+            box-shadow: 0 2px 8px rgba(175, 82, 222, 0.4);
+        }
+
+        /* Context menu */
+        .ctx-menu {
+            position: fixed;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 4px 0;
+            min-width: 160px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            font-size: 13px;
+        }
+
+        .ctx-menu-item {
+            padding: 6px 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+        }
+
+        .ctx-menu-item:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .ctx-menu-item.danger {
+            color: #FF3B30;
+        }
+
+        .ctx-menu-item.danger:hover {
+            background: #FF3B30;
+            color: white;
+        }
+
+        .ctx-menu-sep {
+            height: 1px;
+            background: var(--border);
+            margin: 4px 0;
+        }
+
+        /* AI button removed — now inline in insert rows */
+
+        /* AI loading indicator on block */
+        .ai-loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .ai-loading-overlay {
+                background: rgba(255, 255, 255, 0.05);
+            }
+        }
+
+        .ai-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(175, 82, 222, 0.2);
+            border-top-color: #AF52DE;
+            border-radius: 50%;
+            animation: ai-spin 0.8s linear infinite;
+        }
+
+        @keyframes ai-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* AI Prompt Modal */
+        .ai-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .ai-modal-overlay.visible {
+            opacity: 1;
+        }
+
+        .ai-modal {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            width: 420px;
+            max-width: 90vw;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: translateY(10px) scale(0.97);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .ai-modal-overlay.visible .ai-modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .ai-modal-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text);
+        }
+
+        .ai-modal-input {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 14px;
+            line-height: 1.5;
+            font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+            resize: vertical;
+            min-height: 60px;
+            max-height: 150px;
+            transition: border-color 0.15s ease;
+        }
+
+        .ai-modal-input:focus {
+            border-color: #AF52DE;
+            box-shadow: 0 0 0 3px rgba(175, 82, 222, 0.15);
+        }
+
+        .ai-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .ai-modal-btn {
+            padding: 7px 18px;
+            border-radius: 8px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .ai-modal-btn.cancel {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .ai-modal-btn.cancel:hover {
+            background: var(--text-secondary);
+            color: white;
+        }
+
+        .ai-modal-btn.generate {
+            background: linear-gradient(135deg, #AF52DE, #5856D6);
+            color: white;
+        }
+
+        .ai-modal-btn.generate:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 2px 10px rgba(175, 82, 222, 0.4);
+        }
+
+        .ai-modal-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .ai-modal-loading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 12px;
+        }
+
+        .ai-modal-loading .ai-spinner {
+            width: 16px;
+            height: 16px;
+            border-width: 2px;
+        }
+
+        /* Drag & drop */
+        .live-paragraph[draggable="true"] {
+            cursor: grab;
+        }
+
+        .live-paragraph.dragging {
+            opacity: 0.4;
+        }
+
+        .live-paragraph.drag-over {
+            border-top: 2px solid var(--accent);
+        }
+
+        /* Relative positioning for AI button */
+        .live-paragraph {
+            position: relative;
+        }
+
+        /* Hidden script block indicator */
+        .script-hidden-block {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border: 1.5px dashed var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-family: 'SF Mono', Menlo, monospace;
+            opacity: 0.6;
+            cursor: text;
+        }
+
+        .script-hidden-block:hover {
+            opacity: 1;
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Script play button wrapper */
+        .script-play-wrapper {
+            position: relative;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .script-play-wrapper .script-output {
+            min-height: 20px;
+        }
+
+        .script-play-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, rgba(0, 122, 255, 0.08), rgba(88, 86, 214, 0.08));
+            border-top: 1px solid var(--border);
+            font-family: 'SF Mono', Menlo, monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .script-play-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 14px;
+            border: none;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #34C759, #30D158);
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: system-ui;
+            transition: all 0.2s;
+        }
+
+        .script-play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(52, 199, 89, 0.4);
+        }
+
+        .script-play-btn:active {
+            transform: scale(0.97);
+        }
+
+        .script-play-btn.running {
+            background: linear-gradient(135deg, #007AFF, #5856D6);
+            cursor: default;
+        }
+
+        .script-play-btn.running:hover {
+            transform: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="content"></div>
+
+    <script>
+        // Initialize Mermaid
+        if (typeof mermaid !== 'undefined') {
+            mermaid.initialize({
+                startOnLoad: false,
+                theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
+                securityLevel: 'loose',
+                fontFamily: '-apple-system, BlinkMacSystemFont, SF Pro Text, sans-serif'
+            });
+        }
+
+        // Configure marked.js — identical to markdown_template.html
+        if (typeof marked !== 'undefined') {
+            // Convert simplified ER syntax to Mermaid erDiagram
+            function convertERToMermaid(code) {
+                if (code.trim().startsWith('erDiagram')) return code;
+                const relMap = {
+                    '1--*': '||--o{', '*--1': '}o--||',
+                    '*--*': '}o--o{', '1--1': '||--||',
+                    '1--+': '||--|{', '+--1': '}|--||',
+                    '0--*': '|o--o{', '*--0': '}o--o|',
+                    '0--1': '|o--||', '1--0': '||--o|'
+                };
+                const lines = code.split('\n');
+                const converted = ['erDiagram'];
+                for (const line of lines) {
+                    const trimmed = line.trim();
+                    if (!trimmed) continue;
+                    const m = trimmed.match(/^\[([^\]]+)\]\s*([\d\*\+]+--[\d\*\+]+)\s*\[([^\]]+)\](?:\s*:\s*(.+))?$/);
+                    if (m) {
+                        const e1 = m[1].replace(/\s+/g, '_');
+                        const rel = relMap[m[2]] || '||--o{';
+                        const e2 = m[3].replace(/\s+/g, '_');
+                        const label = m[4] ? m[4].trim() : 'relates';
+                        converted.push(`    ${e1} ${rel} ${e2} : "${label}"`);
+                    } else {
+                        converted.push('    ' + trimmed);
+                    }
+                }
+                return converted.join('\n');
+            }
+
+            const renderer = new marked.Renderer();
+            renderer.code = function (code, language) {
+                if (typeof code === 'object') { language = code.lang; code = code.text; }
+                const lang = (language || '').toLowerCase().trim();
+                if (['mermaid', 'sequence', 'flowchart', 'gantt', 'er', 'erd', 'plantuml', 'diagram'].includes(lang)) {
+                    let mermaidCode = code;
+                    if (lang === 'er' || lang === 'erd') {
+                        mermaidCode = convertERToMermaid(code);
+                    }
+                    return '<div class="mermaid">' + mermaidCode + '</div>';
+                }
+                if (['math', 'latex', 'katex', 'tex'].includes(lang)) {
+                    return '<div class="katex-display-block">' + code + '</div>';
+                }
+                if (typeof hljs !== 'undefined' && lang && hljs.getLanguage(lang)) {
+                    try { return '<pre><code class="hljs language-' + lang + '">' + hljs.highlight(code, { language: lang }).value + '</code></pre>'; } catch (e) { }
+                }
+                if (typeof hljs !== 'undefined') {
+                    return '<pre><code class="hljs">' + hljs.highlightAuto(code).value + '</code></pre>';
+                }
+                return '<pre><code>' + code.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</code></pre>';
+            };
+            renderer.image = function (token) {
+                let href, title, text;
+                if (typeof token === 'object') { href = token.href; title = token.title; text = token.text; }
+                else { href = token; title = arguments[2]; text = arguments[1]; }
+                let sizeClass = '';
+                if (text) {
+                    const sizeMatch = text.match(/^(.*)\|([SMLsml])$/);
+                    if (sizeMatch) { text = sizeMatch[1]; const s = sizeMatch[2].toUpperCase(); sizeClass = s === 'S' ? 'img-s' : s === 'M' ? 'img-m' : s === 'L' ? 'img-l' : ''; }
+                }
+                return `<img src="${href}"${text ? ` alt="${text}"` : ''} ${title ? ` title="${title}"` : ''} ${sizeClass ? ` class="${sizeClass}"` : ''}>`;
+            };
+            marked.use({ renderer, gfm: true, breaks: true });
+        }
+
+        // Color map & emoji — identical to markdown_template.html
+        const colorMap = {
+            red: '#FF3B30', orange: '#FF9F0A', yellow: '#FFCC00', green: '#34C759',
+            blue: '#007AFF', purple: '#AF52DE', pink: '#FF2D55', brown: '#A2845E',
+            cyan: '#32ADE6', teal: '#30B0C7', indigo: '#5856D6', mint: '#00C7BE',
+            gray: '#8E8E93', white: '#FFFFFF', black: '#000000', magenta: '#FF00FF',
+            crimson: '#DC143C', coral: '#FF7F50', salmon: '#FA8072', gold: '#FFD700',
+            lime: '#00FF00', emerald: '#50C878', forest: '#228B22', sky: '#87CEEB',
+            navy: '#000080', violet: '#8F00FF', rose: '#FF0080', lavender: '#B57EDC',
+            peach: '#FFD9BA', maroon: '#800000', olive: '#808000', aqua: '#00FFFF'
+        };
+        const emojiMap = {
+            smile: '😊', laughing: '😆', joy: '😂', heart: '❤️', thumbsup: '👍',
+            thumbsdown: '👎', fire: '🔥', star: '⭐', check: '✅', x: '❌',
+            warning: '⚠️', info: 'ℹ️', question: '❓', exclamation: '❗',
+            rocket: '🚀', bulb: '💡', memo: '📝', book: '📖', link: '🔗',
+            lock: '🔒', unlock: '🔓', key: '🔑', gear: '⚙️', wrench: '🔧',
+            hammer: '🔨', pin: '📌', flag: '🚩', bell: '🔔', clock: '🕐',
+            calendar: '📅', folder: '📁', file: '📄', trash: '🗑️',
+            search: '🔍', eye: '👁️', sparkles: '✨', zap: '⚡',
+            bug: '🐛', tada: '🎉', wave: '👋', point_right: '👉',
+            thinking: '🤔', clap: '👏', muscle: '💪', pray: '🙏',
+            coffee: '☕', pizza: '🍕', beer: '🍺', trophy: '🏆',
+            '+1': '👍', '-1': '👎', '100': '💯',
+            red_circle: '🔴', yellow_circle: '🟡', green_circle: '🟢',
+            large_blue_circle: '🔵', blue_circle: '🔵', purple_circle: '🟣',
+            orange_circle: '🟠', white_circle: '⚪', black_circle: '⚫', brown_circle: '🟤'
+        };
+
+        function resolveColor(name) {
+            const lower = name.toLowerCase().trim();
+            return colorMap[lower] || (lower.startsWith('#') ? lower : null);
+        }
+
+        function preprocessMarkdown(md) {
+            const parseInline = (text) => (typeof marked !== 'undefined' && marked.parseInline) ? marked.parseInline(text) : text;
+            md = md.replace(/::bg-([a-zA-Z]+|#[0-9a-fA-F]{3,8})::(.+?)::/g, (m, c, t) => { const cl = resolveColor(c); return cl ? `<span style="background:${cl}33;padding:1px 4px;border-radius:3px">${parseInline(t)}</span>` : m; });
+            md = md.replace(/::(?!bg-)([a-zA-Z]+|#[0-9a-fA-F]{3,8})::(.+?)::/g, (m, c, t) => { const cl = resolveColor(c); return cl ? `<span style="color:${cl}">${parseInline(t)}</span>` : m; });
+            md = md.replace(/\{bg-([a-zA-Z]+|#[0-9a-fA-F]{3,8})\}(.+?)\{\/bg-\1\}/g, (m, c, t) => { const cl = resolveColor(c); return cl ? `<span style="background:${cl}33;padding:1px 4px;border-radius:3px">${parseInline(t)}</span>` : m; });
+            md = md.replace(/\{(?!bg-)([a-zA-Z]+|#[0-9a-fA-F]{3,8})\}(.+?)\{\/\1\}/g, (m, c, t) => { const cl = resolveColor(c); return cl ? `<span style="color:${cl}">${parseInline(t)}</span>` : m; });
+            md = md.replace(/:([a-z0-9_+-]+):/g, (m, name) => emojiMap[name] || m);
+            md = md.replace(/(^\{al-(right|center|left|justify)\}\s*.+?\s*\{al-\2\}\s*\n?)+/gm, (block) => {
+                const re = /^\{al-(right|center|left|justify)\}\s*(.+?)\s*\{al-\1\}\s*$/gm;
+                let align = ''; const texts = []; let m;
+                while ((m = re.exec(block)) !== null) { align = m[1]; texts.push(m[2].trim()); }
+                if (!align || texts.length === 0) return block;
+                const innerContent = texts.join('\n');
+                return `\n<div class="text-${align}">\n\n${innerContent}\n\n</div>\n\n`;
+            });
+            md = md.replace(/^(> *)\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(.*)?$/gm, (m, gt, type, rest) => {
+                const icons = { NOTE: 'ℹ️', TIP: '💡', IMPORTANT: '❗', WARNING: '⚠️', CAUTION: '🔴' };
+                const extra = rest ? '\n' + gt + rest : '';
+                return `${gt}<div class="alert-box alert-${type.toLowerCase()}"><div class="alert-title">${icons[type] || ''} ${type}</div>${extra}`;
+            });
+            const lines = md.split('\n');
+            let inAlert = false; const result = [];
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.match(/<div class="alert-box/)) { inAlert = true; result.push(line); }
+                else if (inAlert && !line.startsWith('>')) { result.push('</div>\n' + line); inAlert = false; }
+                else if (inAlert && line.startsWith('>')) { result.push(line.replace(/^>\s?/, '')); }
+                else { result.push(line); }
+            }
+            if (inAlert) result.push('</div>');
+            return result.join('\n');
+        }
+
+        // ========== LOCALE SYSTEM ==========
+        let _i18n = {
+            insertAbove: '＋ Insert above',
+            insertBelow: '＋ Insert below',
+            editHint: '✏️ Editing — Enter to save',
+            tapToWrite: 'Tap to write…',
+            ctxEdit: '✏️ Edit',
+            ctxDuplicate: '📋 Duplicate',
+            ctxAIGenerate: '✨ AI Generate',
+            ctxAIFix: '🔧 AI Fix',
+            ctxAIImage: '🎨 AI Image',
+            ctxAIExpand: '🪄 AI Expand',
+            aiChoiceTitle: 'AI Result',
+            aiChoiceReplace: 'Replace',
+            aiChoiceInsert: 'Insert Below',
+            ctxMoveUp: '⬆️ Move up',
+            ctxMoveDown: '⬇️ Move down',
+            ctxDelete: '🗑️ Delete',
+            aiPromptTitle: '✨ AI Generate',
+            aiPromptPlaceholder: 'Describe what you want…',
+            aiGenerate: 'Generate',
+            aiGenerating: 'Generating…',
+            cancel: 'Cancel',
+            undo: '↩️ Undo',
+            redo: '↪️ Redo'
+        };
+
+        function setLocale(json) {
+            try {
+                const obj = typeof json === 'string' ? JSON.parse(json) : json;
+                Object.assign(_i18n, obj);
+            } catch (e) { console.warn('setLocale error:', e); }
+        }
+
+        // ========== LIVE EDITOR LOGIC ==========
+
+        let paragraphs = [];
+        let editingIndex = -1;
+        let skipNextBlur = false;
+        let dragSrcIndex = -1;
+
+        // ========== UNDO / REDO ==========
+        const undoStack = [];
+        const redoStack = [];
+        const MAX_UNDO = 50;
+
+        function saveState() {
+            undoStack.push(JSON.stringify(paragraphs));
+            if (undoStack.length > MAX_UNDO) undoStack.shift();
+            redoStack.length = 0; // clear redo on new action
+        }
+
+        function undo() {
+            if (undoStack.length === 0) return;
+            // commit current editing first
+            if (editingIndex >= 0) {
+                const ta = document.querySelector(`.live-editor[data-index="${editingIndex}"]`);
+                if (ta) paragraphs[editingIndex] = ta.value;
+            }
+            redoStack.push(JSON.stringify(paragraphs));
+            paragraphs = JSON.parse(undoStack.pop());
+            editingIndex = -1;
+            notifySwift();
+            renderAllParagraphs();
+        }
+
+        function redo() {
+            if (redoStack.length === 0) return;
+            undoStack.push(JSON.stringify(paragraphs));
+            paragraphs = JSON.parse(redoStack.pop());
+            editingIndex = -1;
+            notifySwift();
+            renderAllParagraphs();
+        }
+
+        // Global keyboard shortcuts for undo/redo
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) {
+                e.preventDefault();
+                undo();
+            } else if ((e.metaKey || e.ctrlKey) && e.key === 'z' && e.shiftKey) {
+                e.preventDefault();
+                redo();
+            } else if ((e.metaKey || e.ctrlKey) && e.key === 'y') {
+                e.preventDefault();
+                redo();
+            }
+        });
+
+        function splitIntoParagraphs(text) {
+            const result = [];
+            let current = '';
+            let inCodeBlock = false;
+            const lines = text.split('\n');
+
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('```')) {
+                    if (inCodeBlock) {
+                        current += (current ? '\n' : '') + line;
+                        inCodeBlock = false;
+                        result.push(current);
+                        current = '';
+                    } else {
+                        if (current) { result.push(current); current = ''; }
+                        inCodeBlock = true;
+                        current = line;
+                    }
+                } else if (inCodeBlock) {
+                    current += '\n' + line;
+                } else if (trimmed === '') {
+                    if (current) { result.push(current); current = ''; }
+                } else {
+                    if (current) { current += '\n' + line; }
+                    else { current = line; }
+                }
+            }
+            if (current) result.push(current);
+            return result;
+        }
+
+        async function renderParagraphHTML(md) {
+            const processed = preprocessMarkdown(md);
+            if (typeof marked !== 'undefined') {
+                return marked.parse(processed);
+            }
+            return '<p>' + md.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p>';
+        }
+
+        function styleTags(el) {
+            const entities = window._entityData || [];
+            const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+            const textNodes = [];
+            while (walker.nextNode()) {
+                const parent = walker.currentNode.parentNode;
+                if (parent && ['CODE', 'PRE', 'SCRIPT', 'STYLE'].includes(parent.tagName)) continue;
+                if (parent && parent.closest && parent.closest('.mermaid')) continue;
+                textNodes.push(walker.currentNode);
+            }
+            textNodes.forEach(node => {
+                const text = node.textContent;
+                if (!text.match(/(^|\s)#[\w\u00C0-\u024F]+/)) return;
+                const parts = text.split(/((?:^|\s)#[\w\u00C0-\u024F]+)/g);
+                if (parts.length <= 1) return;
+                const frag = document.createDocumentFragment();
+                parts.forEach(part => {
+                    const m = part.match(/^(\s?)#([\w\u00C0-\u024F]+)$/);
+                    if (m) {
+                        if (m[1]) frag.appendChild(document.createTextNode(m[1]));
+                        const tagName = m[2];
+                        const span = document.createElement('span');
+                        span.className = 'tag';
+                        const entity = entities.find(e => (e.tags && e.tags.some(t => t.toLowerCase() === tagName.toLowerCase())) || (e.name && e.name.replace(/\s/g, '').toLowerCase() === tagName.toLowerCase()));
+                        if (entity && entity.color) { span.style.color = entity.color; span.style.background = entity.color + '1F'; }
+                        span.innerHTML = '<span class="hash">#</span>' + tagName;
+                        frag.appendChild(span);
+                    } else {
+                        frag.appendChild(document.createTextNode(part));
+                    }
+                });
+                node.parentNode.replaceChild(frag, node);
+            });
+        }
+
+        async function renderAllParagraphs() {
+            const el = document.getElementById('content');
+            el.innerHTML = '';
+
+            for (let i = 0; i < paragraphs.length; i++) {
+                const div = document.createElement('div');
+                div.className = 'live-paragraph';
+                div.dataset.index = i;
+
+                // Drag & drop on all paragraphs
+                div.draggable = true;
+                div.addEventListener('dragstart', (e) => {
+                    dragSrcIndex = i;
+                    div.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', String(i));
+                });
+                div.addEventListener('dragend', () => {
+                    div.classList.remove('dragging');
+                    document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+                });
+                div.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    div.classList.add('drag-over');
+                });
+                div.addEventListener('dragleave', () => {
+                    div.classList.remove('drag-over');
+                });
+                div.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    div.classList.remove('drag-over');
+                    const from = dragSrcIndex;
+                    const to = i;
+                    if (from !== to && from >= 0) {
+                        moveParagraph(from, to);
+                    }
+                });
+
+                // Right-click context menu on all paragraphs
+                div.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    showContextMenu(e.clientX, e.clientY, i);
+                });
+
+                if (i === editingIndex) {
+                    div.classList.add('editing');
+                    div.draggable = false;
+
+                    // Top row: [+ Insert above] [🔧 AI Fix]
+                    const topRow = document.createElement('div');
+                    topRow.className = 'insert-row';
+                    const btnAbove = document.createElement('span');
+                    btnAbove.className = 'insert-btn-inner';
+                    btnAbove.textContent = _i18n.insertAbove;
+                    btnAbove.addEventListener('mousedown', (e) => { e.preventDefault(); e.stopPropagation(); skipNextBlur = true; });
+                    btnAbove.addEventListener('click', (e) => { e.stopPropagation(); insertAbove(i); });
+                    topRow.appendChild(btnAbove);
+                    const fixBtn = document.createElement('button');
+                    fixBtn.className = 'ai-action-btn';
+                    fixBtn.textContent = _i18n.ctxAIFix;
+                    fixBtn.addEventListener('mousedown', (e) => { e.preventDefault(); e.stopPropagation(); skipNextBlur = true; });
+                    fixBtn.addEventListener('click', (e) => { e.stopPropagation(); requestAIFix(i); });
+                    topRow.appendChild(fixBtn);
+                    div.appendChild(topRow);
+
+                    const hint = document.createElement('div');
+                    hint.className = 'edit-hint';
+                    hint.textContent = _i18n.editHint;
+                    div.appendChild(hint);
+
+                    const textarea = document.createElement('textarea');
+                    textarea.className = 'live-editor';
+                    textarea.value = paragraphs[i];
+                    textarea.dataset.index = i;
+                    div.appendChild(textarea);
+
+                    // Bottom row: [+ Insert below] [✨ AI Generate]
+                    const botRow = document.createElement('div');
+                    botRow.className = 'insert-row';
+                    const btnBelow = document.createElement('span');
+                    btnBelow.className = 'insert-btn-inner';
+                    btnBelow.textContent = _i18n.insertBelow;
+                    btnBelow.addEventListener('mousedown', (e) => { e.preventDefault(); e.stopPropagation(); skipNextBlur = true; });
+                    btnBelow.addEventListener('click', (e) => { e.stopPropagation(); insertBelow(i); });
+                    botRow.appendChild(btnBelow);
+                    const genBtn = document.createElement('button');
+                    genBtn.className = 'ai-action-btn';
+                    genBtn.textContent = _i18n.ctxAIGenerate;
+                    genBtn.addEventListener('mousedown', (e) => { e.preventDefault(); e.stopPropagation(); skipNextBlur = true; });
+                    genBtn.addEventListener('click', (e) => { e.stopPropagation(); showAIPromptModal(i); });
+                    botRow.appendChild(genBtn);
+                    div.appendChild(botRow);
+
+                    // Auto-resize
+                    requestAnimationFrame(() => {
+                        autoResize(textarea);
+                        textarea.focus();
+                        textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+                    });
+
+                    textarea.addEventListener('input', () => autoResize(textarea));
+                    textarea.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            commitAndNext(parseInt(textarea.dataset.index));
+                        }
+                        if (e.key === 'Escape') {
+                            e.preventDefault();
+                            commitParagraph(parseInt(textarea.dataset.index), textarea.value);
+                        }
+                    });
+                    textarea.addEventListener('blur', () => {
+                        if (skipNextBlur) { skipNextBlur = false; return; }
+                        const idx = parseInt(textarea.dataset.index);
+                        setTimeout(() => {
+                            if (editingIndex === idx) {
+                                commitParagraph(idx, textarea.value);
+                            }
+                        }, 150);
+                    });
+                } else {
+                    const html = await renderParagraphHTML(paragraphs[i]);
+                    div.innerHTML = html;
+                    styleTags(div);
+
+                    // Scripts disabled → show indicator
+                    if (!window._allowScripts && div.querySelector('script')) {
+                        div.innerHTML = '<div class="script-hidden-block" style="opacity:0.5">🚫 Scripts disabled</div>';
+                    }
+                    // Has scripts → show ▶ Play button instead of auto-executing
+                    else if (window._allowScripts && div.querySelector('script')) {
+                        wrapScriptsWithPlayButton(div, i);
+                    }
+
+                    div.addEventListener('click', (e) => {
+                        // Don't enter editing if clicking inside a script play wrapper
+                        if (e.target.closest('.script-play-wrapper') || e.target.closest('.script-play-btn')) return;
+                        startEditing(i);
+                    });
+                }
+
+                el.appendChild(div);
+            }
+
+            // Empty area at bottom for adding new content
+            const bottom = document.createElement('div');
+            bottom.className = 'empty-hint';
+            bottom.textContent = _i18n.tapToWrite;
+            bottom.style.minHeight = '200px';
+            bottom.addEventListener('click', () => {
+                paragraphs.push('');
+                startEditing(paragraphs.length - 1);
+            });
+            el.appendChild(bottom);
+
+            // Render Mermaid diagrams
+            if (typeof mermaid !== 'undefined') {
+                try {
+                    const nodes = document.querySelectorAll('.mermaid');
+                    if (nodes.length > 0) {
+                        nodes.forEach((n, i) => { n.removeAttribute('data-processed'); n.id = 'mermaid-live-' + i; });
+                        await mermaid.run({ nodes });
+                    }
+                } catch (e) { console.warn('Mermaid:', e); }
+            }
+
+            // KaTeX
+            if (typeof katex !== 'undefined') {
+                document.querySelectorAll('.katex-display-block').forEach(b => {
+                    try { katex.render(b.textContent, b, { displayMode: true, throwOnError: false }); } catch (e) { }
+                });
+                if (typeof renderMathInElement !== 'undefined') {
+                    renderMathInElement(el, {
+                        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }],
+                        throwOnError: false
+                    });
+                }
+            }
+        }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        function startEditing(index) {
+            // Save current editing if any
+            if (editingIndex >= 0 && editingIndex < paragraphs.length) {
+                const ta = document.querySelector(`.live-editor[data-index="${editingIndex}"]`);
+                if (ta) paragraphs[editingIndex] = ta.value;
+            }
+            editingIndex = index;
+            renderAllParagraphs();
+        }
+
+        function commitParagraph(index, value) {
+            saveState();
+            if (index >= 0 && index < paragraphs.length) {
+                paragraphs[index] = value;
+            }
+            editingIndex = -1;
+            while (paragraphs.length > 0 && paragraphs[paragraphs.length - 1].trim() === '') {
+                paragraphs.pop();
+            }
+            if (paragraphs.length === 0) paragraphs.push('');
+            notifySwift();
+            renderAllParagraphs();
+        }
+
+        function commitAndNext(index) {
+            saveState();
+            const ta = document.querySelector(`.live-editor[data-index="${index}"]`);
+            if (ta) paragraphs[index] = ta.value;
+            paragraphs.splice(index + 1, 0, '');
+            editingIndex = index + 1;
+            notifySwift();
+            renderAllParagraphs();
+        }
+
+        function insertAbove(index) {
+            saveState();
+            const ta = document.querySelector(`.live-editor[data-index="${index}"]`);
+            if (ta) paragraphs[index] = ta.value;
+            paragraphs.splice(index, 0, '');
+            editingIndex = index;
+            notifySwift();
+            renderAllParagraphs();
+        }
+
+        function insertBelow(index) {
+            saveState();
+            const ta = document.querySelector(`.live-editor[data-index="${index}"]`);
+            if (ta) paragraphs[index] = ta.value;
+            paragraphs.splice(index + 1, 0, '');
+            editingIndex = index + 1;
+            notifySwift();
+            renderAllParagraphs();
+        }
+
+        function deleteParagraph(index) {
+            saveState();
+            if (paragraphs.length <= 1) {
+                paragraphs = [''];
+            } else {
+                paragraphs.splice(index, 1);
+            }
+            editingIndex = -1;
+            notifySwift();
+            renderAllParagraphs();
+        }
+
+        function duplicateParagraph(index) {
+            saveState();
+            paragraphs.splice(index + 1, 0, paragraphs[index]);
+            notifySwift();
+            renderAllParagraphs();
+        }
+
+        function moveParagraph(from, to) {
+            if (from === to) return;
+            saveState();
+            const item = paragraphs.splice(from, 1)[0];
+            paragraphs.splice(to > from ? to - 1 : to, 0, item);
+            editingIndex = -1;
+            notifySwift();
+            renderAllParagraphs();
+        }
+
+        function moveUp(index) {
+            if (index <= 0) return;
+            saveState();
+            [paragraphs[index - 1], paragraphs[index]] = [paragraphs[index], paragraphs[index - 1]];
+            editingIndex = -1;
+            notifySwift();
+            renderAllParagraphs();
+        }
+
+        function moveDown(index) {
+            if (index >= paragraphs.length - 1) return;
+            saveState();
+            [paragraphs[index], paragraphs[index + 1]] = [paragraphs[index + 1], paragraphs[index]];
+            editingIndex = -1;
+            notifySwift();
+            renderAllParagraphs();
+        }
+
+        // Context menu
+        function showContextMenu(x, y, index) {
+            hideContextMenu();
+            const menu = document.createElement('div');
+            menu.className = 'ctx-menu';
+            menu.id = 'ctx-menu';
+            menu.style.left = x + 'px';
+            menu.style.top = y + 'px';
+
+            const items = [
+                { label: _i18n.undo, action: () => undo(), disabled: undoStack.length === 0 },
+                { label: _i18n.redo, action: () => redo(), disabled: redoStack.length === 0 },
+                { sep: true },
+                { label: _i18n.ctxEdit, action: () => startEditing(index) },
+                { label: _i18n.ctxDuplicate, action: () => duplicateParagraph(index) },
+                { sep: true },
+                { label: _i18n.ctxAIGenerate, action: () => showAIPromptModal(index) },
+                { label: _i18n.ctxAIFix, action: () => requestAIFix(index), disabled: !(paragraphs[index] || '').trim() },
+                { label: _i18n.ctxAIImage, action: () => showAIImageModal(index) },
+                { label: _i18n.ctxAIExpand, action: () => requestAIExpand(index), disabled: !(paragraphs[index] || '').trim() },
+                { sep: true },
+                { label: _i18n.ctxMoveUp, action: () => moveUp(index), disabled: index === 0 },
+                { label: _i18n.ctxMoveDown, action: () => moveDown(index), disabled: index >= paragraphs.length - 1 },
+                { sep: true },
+                { label: _i18n.ctxDelete, action: () => deleteParagraph(index), danger: true }
+            ];
+
+            items.forEach(item => {
+                if (item.sep) {
+                    const sep = document.createElement('div');
+                    sep.className = 'ctx-menu-sep';
+                    menu.appendChild(sep);
+                } else {
+                    const el = document.createElement('div');
+                    el.className = 'ctx-menu-item' + (item.danger ? ' danger' : '');
+                    el.textContent = item.label;
+                    if (item.disabled) {
+                        el.style.opacity = '0.3';
+                        el.style.pointerEvents = 'none';
+                    }
+                    el.addEventListener('click', () => { hideContextMenu(); item.action(); });
+                    menu.appendChild(el);
+                }
+            });
+
+            document.body.appendChild(menu);
+
+            // Adjust if menu goes off-screen
+            const rect = menu.getBoundingClientRect();
+            if (rect.right > window.innerWidth) menu.style.left = (window.innerWidth - rect.width - 8) + 'px';
+            if (rect.bottom > window.innerHeight) menu.style.top = (window.innerHeight - rect.height - 8) + 'px';
+
+            // Close on click outside
+            setTimeout(() => {
+                document.addEventListener('click', hideContextMenu, { once: true });
+            }, 10);
+        }
+
+        function hideContextMenu() {
+            const m = document.getElementById('ctx-menu');
+            if (m) m.remove();
+        }
+
+        function notifySwift() {
+            const fullText = paragraphs.join('\n\n');
+            try {
+                window.webkit.messageHandlers.textChanged.postMessage(fullText);
+            } catch (e) { }
+        }
+
+        // ========== AI BLOCK GENERATION ==========
+
+        let aiModalIndex = -1;
+        let aiModalLoading = false;
+
+        function showAIPromptModal(index) {
+            aiModalIndex = index;
+            aiModalLoading = false;
+
+            // Remove existing modal if any
+            hideAIPromptModal();
+
+            const overlay = document.createElement('div');
+            overlay.className = 'ai-modal-overlay';
+            overlay.id = 'ai-modal-overlay';
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) hideAIPromptModal();
+            });
+
+            const modal = document.createElement('div');
+            modal.className = 'ai-modal';
+
+            const title = document.createElement('div');
+            title.className = 'ai-modal-title';
+            title.textContent = _i18n.aiPromptTitle;
+
+            const input = document.createElement('textarea');
+            input.className = 'ai-modal-input';
+            input.id = 'ai-modal-input';
+            input.placeholder = _i18n.aiPromptPlaceholder;
+
+            const actions = document.createElement('div');
+            actions.className = 'ai-modal-actions';
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'ai-modal-btn cancel';
+            cancelBtn.textContent = _i18n.cancel;
+            cancelBtn.addEventListener('click', hideAIPromptModal);
+
+            const generateBtn = document.createElement('button');
+            generateBtn.className = 'ai-modal-btn generate';
+            generateBtn.id = 'ai-modal-generate-btn';
+            generateBtn.textContent = _i18n.aiGenerate;
+            generateBtn.addEventListener('click', () => {
+                const prompt = input.value.trim();
+                if (!prompt) return;
+                submitAIGenerate(index, prompt);
+            });
+
+            actions.appendChild(cancelBtn);
+            actions.appendChild(generateBtn);
+
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'ai-modal-loading';
+            loadingDiv.id = 'ai-modal-loading';
+            loadingDiv.style.display = 'none';
+            loadingDiv.innerHTML = '<div class="ai-spinner"></div><span>' + _i18n.aiGenerating + '</span>';
+
+            modal.appendChild(title);
+            modal.appendChild(input);
+            modal.appendChild(actions);
+            modal.appendChild(loadingDiv);
+            overlay.appendChild(modal);
+
+            document.body.appendChild(overlay);
+
+            // Animate in
+            requestAnimationFrame(() => {
+                overlay.classList.add('visible');
+                input.focus();
+            });
+
+            // Enter key submits
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const prompt = input.value.trim();
+                    if (prompt) submitAIGenerate(index, prompt);
+                }
+                if (e.key === 'Escape') {
+                    hideAIPromptModal();
+                }
+            });
+        }
+
+        function hideAIPromptModal() {
+            const overlay = document.getElementById('ai-modal-overlay');
+            if (overlay) {
+                overlay.classList.remove('visible');
+                setTimeout(() => overlay.remove(), 200);
+            }
+            aiModalLoading = false;
+        }
+
+        function submitAIGenerate(index, prompt) {
+            aiModalLoading = true;
+
+            // Show loading state in modal
+            const genBtn = document.getElementById('ai-modal-generate-btn');
+            const loadingDiv = document.getElementById('ai-modal-loading');
+            const inputEl = document.getElementById('ai-modal-input');
+            if (genBtn) genBtn.disabled = true;
+            if (loadingDiv) loadingDiv.style.display = 'flex';
+            if (inputEl) inputEl.disabled = true;
+
+            // Show loading on the block too
+            showAILoading(index);
+
+            // Send to Swift
+            try {
+                window.webkit.messageHandlers.aiGenerate.postMessage(JSON.stringify({
+                    index: index,
+                    prompt: prompt,
+                    currentContent: paragraphs[index] || ''
+                }));
+            } catch (e) {
+                console.error('AI Generate error:', e);
+                hideAIPromptModal();
+                hideAILoading(index);
+            }
+        }
+
+        function requestAIFix(index) {
+            const content = paragraphs[index] || '';
+            if (!content.trim()) return;
+
+            showAILoading(index);
+
+            try {
+                window.webkit.messageHandlers.aiFix.postMessage(JSON.stringify({
+                    index: index,
+                    content: content
+                }));
+            } catch (e) {
+                console.error('AI Fix error:', e);
+                hideAILoading(index);
+            }
+        }
+
+        function showAIImageModal(index) {
+            hideAIPromptModal();
+
+            const overlay = document.createElement('div');
+            overlay.className = 'ai-modal-overlay';
+            overlay.id = 'ai-modal-overlay';
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) hideAIPromptModal();
+            });
+
+            const modal = document.createElement('div');
+            modal.className = 'ai-modal';
+
+            const title = document.createElement('div');
+            title.className = 'ai-modal-title';
+            title.textContent = _i18n.ctxAIImage;
+
+            const input = document.createElement('textarea');
+            input.className = 'ai-modal-input';
+            input.id = 'ai-modal-input';
+            input.placeholder = _i18n.aiPromptPlaceholder;
+
+            const actions = document.createElement('div');
+            actions.className = 'ai-modal-actions';
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'ai-modal-btn cancel';
+            cancelBtn.textContent = _i18n.cancel;
+            cancelBtn.addEventListener('click', hideAIPromptModal);
+
+            const generateBtn = document.createElement('button');
+            generateBtn.className = 'ai-modal-btn generate';
+            generateBtn.textContent = _i18n.ctxAIImage;
+            generateBtn.addEventListener('click', () => {
+                const prompt = input.value.trim();
+                if (!prompt) return;
+                hideAIPromptModal();
+                showAILoading(index);
+                try {
+                    window.webkit.messageHandlers.aiImage.postMessage(JSON.stringify({
+                        index: index,
+                        prompt: prompt,
+                        currentContent: paragraphs[index] || ''
+                    }));
+                } catch (e) {
+                    console.error('AI Image error:', e);
+                    hideAILoading(index);
+                }
+            });
+
+            actions.appendChild(cancelBtn);
+            actions.appendChild(generateBtn);
+            modal.appendChild(title);
+            modal.appendChild(input);
+            modal.appendChild(actions);
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+
+            requestAnimationFrame(() => {
+                overlay.classList.add('visible');
+                input.focus();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    generateBtn.click();
+                }
+                if (e.key === 'Escape') hideAIPromptModal();
+            });
+        }
+
+        // Called from Swift when AI result is ready
+        function receiveAIResult(index, content) {
+            hideAIPromptModal();
+            hideAILoading(index);
+
+            if (_pendingExpand === index) {
+                _pendingExpand = -1;
+                showAIChoiceDialog(index, content);
+                return;
+            }
+
+            saveState();
+            if (index >= 0 && index < paragraphs.length) {
+                paragraphs[index] = content;
+            } else if (index >= paragraphs.length) {
+                paragraphs.push(content);
+            }
+            editingIndex = -1;
+            notifySwift();
+            renderAllParagraphs();
+        }
+
+        // Called from Swift when AI image is ready — inserts BELOW the block
+        function receiveAIImage(index, content) {
+            hideAIPromptModal();
+            hideAILoading(index);
+            showAIChoiceDialog(index, content);
+        }
+
+        // AI Expand: use block content as direct prompt
+        var _pendingExpand = -1;
+
+        function requestAIExpand(index) {
+            const content = paragraphs[index] || '';
+            if (!content.trim()) return;
+
+            _pendingExpand = index;
+            showAILoading(index);
+
+            try {
+                window.webkit.messageHandlers.aiExpand.postMessage(JSON.stringify({
+                    index: index,
+                    prompt: content,
+                    currentContent: content
+                }));
+            } catch (e) {
+                console.error('AI Expand error:', e);
+                hideAILoading(index);
+                _pendingExpand = -1;
+            }
+        }
+
+        // Choice dialog: Replace or Insert Below
+        function showAIChoiceDialog(index, content) {
+            hideAIPromptModal();
+
+            const overlay = document.createElement('div');
+            overlay.className = 'ai-modal-overlay';
+            overlay.id = 'ai-modal-overlay';
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) { overlay.remove(); }
+            });
+
+            const modal = document.createElement('div');
+            modal.className = 'ai-modal';
+
+            const title = document.createElement('div');
+            title.className = 'ai-modal-title';
+            title.textContent = _i18n.aiChoiceTitle || 'AI Result';
+
+            // Preview of result
+            const preview = document.createElement('div');
+            preview.style.cssText = 'max-height:150px;overflow:auto;padding:10px;border-radius:6px;background:var(--bg-secondary);font-size:13px;margin:8px 0;white-space:pre-wrap;word-break:break-word;';
+            preview.textContent = content.length > 300 ? content.substring(0, 300) + '…' : content;
+
+            const actions = document.createElement('div');
+            actions.className = 'ai-modal-actions';
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'ai-modal-btn cancel';
+            cancelBtn.textContent = _i18n.cancel;
+            cancelBtn.addEventListener('click', () => overlay.remove());
+
+            const replaceBtn = document.createElement('button');
+            replaceBtn.className = 'ai-modal-btn generate';
+            replaceBtn.textContent = _i18n.aiChoiceReplace || 'Replace';
+            replaceBtn.addEventListener('click', () => {
+                overlay.remove();
+                saveState();
+                if (index >= 0 && index < paragraphs.length) {
+                    paragraphs[index] = content;
+                }
+                editingIndex = -1;
+                notifySwift();
+                renderAllParagraphs();
+            });
+
+            const insertBtn = document.createElement('button');
+            insertBtn.className = 'ai-modal-btn generate';
+            insertBtn.textContent = _i18n.aiChoiceInsert || 'Insert Below';
+            insertBtn.addEventListener('click', () => {
+                overlay.remove();
+                saveState();
+                paragraphs.splice(index + 1, 0, content);
+                editingIndex = -1;
+                notifySwift();
+                renderAllParagraphs();
+            });
+
+            actions.appendChild(cancelBtn);
+            actions.appendChild(replaceBtn);
+            actions.appendChild(insertBtn);
+            modal.appendChild(title);
+            modal.appendChild(preview);
+            modal.appendChild(actions);
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+
+            requestAnimationFrame(() => overlay.classList.add('visible'));
+        }
+
+        // Called from Swift on AI error
+        function receiveAIError(index, errorMsg) {
+            hideAIPromptModal();
+            hideAILoading(index);
+            // Brief visual feedback — could be improved with a toast
+            console.error('AI Error:', errorMsg);
+        }
+
+        function showAILoading(index) {
+            const el = document.querySelector(`.live-paragraph[data-index="${index}"]`);
+            if (!el) return;
+            // Remove existing loading
+            hideAILoading(index);
+            const overlay = document.createElement('div');
+            overlay.className = 'ai-loading-overlay';
+            overlay.id = `ai-loading-${index}`;
+            overlay.innerHTML = '<div class="ai-spinner"></div>';
+            el.appendChild(overlay);
+        }
+
+        function hideAILoading(index) {
+            const el = document.getElementById(`ai-loading-${index}`);
+            if (el) el.remove();
+        }
+
+        // Called from Swift to set initial content
+        function setMarkdown(md) {
+            paragraphs = splitIntoParagraphs(md);
+            if (paragraphs.length === 0) paragraphs = [''];
+            editingIndex = -1;
+            renderAllParagraphs();
+        }
+
+        // Called from Swift to update content (external change)
+        function updateMarkdown(md) {
+            if (editingIndex >= 0) return; // Don't override while editing
+            const newParagraphs = splitIntoParagraphs(md);
+            if (JSON.stringify(newParagraphs) !== JSON.stringify(paragraphs)) {
+                paragraphs = newParagraphs.length > 0 ? newParagraphs : [''];
+                renderAllParagraphs();
+            }
+        }
+
+        // Script execution support
+        window._allowScripts = false;
+
+        function setAllowScripts(allow) {
+            window._allowScripts = !!allow;
+        }
+
+        function activateScripts(container) {
+            if (!window._allowScripts) return;
+            const scripts = container.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                for (const attr of oldScript.attributes) {
+                    newScript.setAttribute(attr.name, attr.value);
+                }
+                newScript.textContent = oldScript.textContent;
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+        }
+
+        // ── Play Button for Live Editor ──
+        function wrapScriptsWithPlayButton(div, paragraphIndex) {
+            // Collect all script tags and their content
+            const scriptElements = Array.from(div.querySelectorAll('script'));
+            const scriptData = scriptElements.map(s => ({
+                text: s.textContent,
+                attrs: Array.from(s.attributes).map(a => ({ name: a.name, value: a.value }))
+            }));
+            // Remove script tags from visible DOM (keep HTML output like canvas, divs)
+            scriptElements.forEach(s => s.remove());
+
+            // Wrap everything in a play container
+            const wrapper = document.createElement('div');
+            wrapper.className = 'script-play-wrapper';
+
+            // Move existing visible content into output area
+            const output = document.createElement('div');
+            output.className = 'script-output';
+            while (div.firstChild) output.appendChild(div.firstChild);
+            wrapper.appendChild(output);
+
+            // Play bar
+            const bar = document.createElement('div');
+            bar.className = 'script-play-bar';
+            const playBtn = document.createElement('button');
+            playBtn.className = 'script-play-btn';
+            playBtn.innerHTML = '▶ Run';
+            playBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (playBtn.classList.contains('running')) return;
+                playBtn.classList.add('running');
+                playBtn.innerHTML = '✅ Running';
+                // Inject scripts into the output container to execute
+                scriptData.forEach(sd => {
+                    const newScript = document.createElement('script');
+                    sd.attrs.forEach(a => newScript.setAttribute(a.name, a.value));
+                    newScript.textContent = sd.text;
+                    output.appendChild(newScript);
+                });
+            });
+            bar.appendChild(playBtn);
+            bar.appendChild(document.createTextNode('Script block'));
+            wrapper.appendChild(bar);
+
+            div.appendChild(wrapper);
+        }
+
+        // ── VEditor JS API Bridge ──────────────────────────────
+        window.veditor = {
+            _callbacks: {},
+            _nextId: 1,
+            _call(action, params) {
+                return new Promise(resolve => {
+                    const id = this._nextId++;
+                    this._callbacks[id] = resolve;
+                    try {
+                        webkit.messageHandlers.veditorAPI.postMessage(
+                            JSON.stringify({ action, callbackId: id, ...(params || {}) })
+                        );
+                    } catch (e) {
+                        delete this._callbacks[id];
+                        resolve(null);
+                    }
+                });
+            },
+            getDocumentContent() { return this._call('getDocumentContent'); },
+            getDocumentList() { return this._call('getDocumentList'); },
+            getEntities() { return this._call('getEntities'); },
+            getProjectInfo() { return this._call('getProjectInfo'); },
+            notify(msg) {
+                try {
+                    webkit.messageHandlers.veditorAPI.postMessage(
+                        JSON.stringify({ action: 'notify', message: msg })
+                    );
+                } catch (e) { console.warn('VEditor API not available'); }
+            }
+        };
+        function _veditorCallback(id, data) {
+            if (window.veditor._callbacks[id]) {
+                window.veditor._callbacks[id](data);
+                delete window.veditor._callbacks[id];
+            }
+        }
+    </script>
+</body>
+
+</html>
