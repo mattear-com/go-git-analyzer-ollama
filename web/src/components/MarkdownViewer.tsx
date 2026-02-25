@@ -8,12 +8,24 @@ import mermaid from "mermaid";
 import { useEffect, useRef, useState, useCallback } from "react";
 import "highlight.js/styles/github-dark.css";
 
-// Initialize mermaid once
+// Detect theme and initialize mermaid
+const isDark = typeof window !== "undefined" && window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
 mermaid.initialize({
     startOnLoad: false,
-    theme: "dark",
+    theme: isDark ? "dark" : "default",
     securityLevel: "loose",
     fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif",
+    themeVariables: isDark ? {} : {
+        primaryColor: "#e8eaed",
+        primaryTextColor: "#1a1a2e",
+        primaryBorderColor: "#c0c0c0",
+        lineColor: "#6b7280",
+        secondaryColor: "#f3f4f6",
+        tertiaryColor: "#ffffff",
+        noteBkgColor: "#fff3cd",
+        noteTextColor: "#1a1a2e",
+        noteBorderColor: "#e0c97a",
+    },
 });
 
 // Pre-process mermaid code to fix common AI-generated syntax issues
@@ -407,6 +419,22 @@ export function MarkdownViewer({ content, compact = false }: MarkdownViewerProps
                 .md-mermaid svg {
                     max-width: 100%;
                     height: auto;
+                }
+
+                /* Light mode: ensure mermaid text is readable */
+                @media (prefers-color-scheme: light) {
+                    .md-mermaid {
+                        background: #fafafa;
+                        border-color: #e0e0e0;
+                    }
+                    .md-mermaid text {
+                        fill: #1a1a2e !important;
+                    }
+                    .md-mermaid .nodeLabel,
+                    .md-mermaid .edgeLabel,
+                    .md-mermaid .label {
+                        color: #1a1a2e !important;
+                    }
                 }
 
                 /* Strong / Bold */

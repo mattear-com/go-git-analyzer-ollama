@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/arturoeanton/go-git-analyzer-ollama/internal/adapter/store"
 	"github.com/arturoeanton/go-git-analyzer-ollama/internal/domain"
@@ -181,10 +182,28 @@ func (h *AnalysisHandler) runAnalysisJob(jobID, repoID string, req port.Analysis
 		h.tracker.UpdateJob(jobID, strategy, i, "running")
 		slog.Info("running strategy", "job_id", jobID, "strategy", strategy, "progress", fmt.Sprintf("%d/%d", i+1, len(strategies)))
 
-		result, err := h.analysisService.RunStrategy(ctx, strategy, req)
+		var result *port.AnalysisResult
+		var err error
+		maxRetries := 2
+		for attempt := 0; attempt <= maxRetries; attempt++ {
+			if attempt > 0 {
+				slog.Warn("retrying strategy", "strategy", strategy, "attempt", attempt+1, "max", maxRetries+1)
+				time.Sleep(5 * time.Second)
+			}
+			result, err = h.analysisService.RunStrategy(ctx, strategy, req)
+			if err == nil {
+				break
+			}
+			slog.Error("strategy attempt failed", "strategy", strategy, "attempt", attempt+1, "error", err)
+		}
+
 		if err != nil {
-			slog.Error("strategy failed", "strategy", strategy, "error", err)
-			h.tracker.UpdateJob(jobID, strategy, i+1, "running") // continue
+			slog.Error("strategy failed after retries", "strategy", strategy, "error", err)
+			// Save a failure report so the user knows
+			failSummary := fmt.Sprintf("## ⚠️ Analysis Failed\n\nThe **%s** strategy could not be completed after %d attempts.\n\n**Error:** `%s`\n\nYou can re-run the analysis to try again.",
+				strategy, maxRetries+1, err.Error())
+			_ = h.store.SaveAnalysisResultFull(ctx, repoID, strategy, failSummary, "{}", 0, "")
+			h.tracker.UpdateJob(jobID, strategy, i+1, "running")
 			continue
 		}
 
