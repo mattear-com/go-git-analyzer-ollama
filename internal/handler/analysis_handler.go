@@ -269,9 +269,41 @@ func (h *AnalysisHandler) buildAnalysisRequest(repoID string) (port.AnalysisRequ
 	codeExts := map[string]bool{
 		".go": true, ".py": true, ".js": true, ".ts": true, ".tsx": true, ".jsx": true,
 		".java": true, ".rs": true, ".rb": true, ".swift": true, ".kt": true, ".c": true,
-		".cpp": true, ".h": true, ".cs": true, ".php": true, ".sh": true,
-		".yaml": true, ".yml": true, ".toml": true, ".json": true,
+		".cpp": true, ".h": true, ".cs": true, ".php": true, ".sh": true, ".vb": true,
+		".yaml": true, ".yml": true, ".toml": true,
 		".sql": true, ".proto": true, ".tf": true, ".md": true,
+		".html": true, ".css": true, ".scss": true, ".vue": true, ".svelte": true,
+		".xml": true, ".properties": true, ".env": true, ".txt": true,
+	}
+
+	// Explicitly skip these (binaries, images, media, archives, fonts, etc.)
+	skipExts := map[string]bool{
+		// Data/config (too large, not useful for analysis)
+		".json": true, ".lock": true, ".map": true,
+		// Images
+		".png": true, ".jpg": true, ".jpeg": true, ".gif": true, ".ico": true, ".svg": true,
+		".webp": true, ".bmp": true, ".tiff": true, ".heic": true, ".raw": true,
+		// Video/Audio
+		".mp4": true, ".mp3": true, ".wav": true, ".avi": true, ".mov": true,
+		".flac": true, ".ogg": true, ".webm": true,
+		// Documents (binary)
+		".pdf": true, ".doc": true, ".docx": true, ".xls": true, ".xlsx": true, ".ppt": true, ".pptx": true,
+		// Archives
+		".zip": true, ".tar": true, ".gz": true, ".bz2": true, ".7z": true, ".rar": true,
+		".jar": true, ".war": true, ".deb": true, ".rpm": true,
+		// Compiled/Binary
+		".exe": true, ".bin": true, ".dll": true, ".so": true, ".dylib": true,
+		".o": true, ".a": true, ".obj": true, ".lib": true, ".pdb": true,
+		".class": true, ".pyc": true, ".wasm": true,
+		// Fonts
+		".ttf": true, ".otf": true, ".woff": true, ".woff2": true, ".eot": true,
+		// Database
+		".sqlite": true, ".db": true,
+	}
+	skipFiles := map[string]bool{
+		"package-lock.json": true, "yarn.lock": true, "pnpm-lock.yaml": true,
+		"go.sum": true, "Cargo.lock": true, "Gemfile.lock": true,
+		"composer.lock": true, "poetry.lock": true, "Pipfile.lock": true,
 	}
 
 	configFiles := map[string]bool{
@@ -280,10 +312,11 @@ func (h *AnalysisHandler) buildAnalysisRequest(repoID string) (port.AnalysisRequ
 		"README.md": true, ".gitignore": true,
 	}
 
-	maxChunks := 30
-	maxFileSize := 8000
+	// Kimi K2 supports 256K context — we can send much more code
+	maxChunks := 80
+	maxFileSize := 15000
 	totalChars := 0
-	maxTotalChars := 60000
+	maxTotalChars := 500000 // ~125K tokens — well within 256K limit
 
 	_ = filepath.Walk(repo.LocalPath, func(path string, info os.FileInfo, walkErr error) error {
 		if walkErr != nil {
@@ -293,7 +326,8 @@ func (h *AnalysisHandler) buildAnalysisRequest(repoID string) (port.AnalysisRequ
 		if info.IsDir() {
 			base := filepath.Base(path)
 			if strings.HasPrefix(base, ".") || base == "node_modules" || base == "vendor" ||
-				base == "__pycache__" || base == "dist" || base == "build" || base == "target" {
+				base == "__pycache__" || base == "dist" || base == "build" || base == "target" ||
+				base == ".next" || base == "coverage" {
 				return filepath.SkipDir
 			}
 			return nil
@@ -302,6 +336,12 @@ func (h *AnalysisHandler) buildAnalysisRequest(repoID string) (port.AnalysisRequ
 
 		ext := strings.ToLower(filepath.Ext(path))
 		baseName := filepath.Base(path)
+
+		// Skip known binary/non-useful files first
+		if skipExts[ext] || skipFiles[baseName] {
+			return nil
+		}
+
 		if !codeExts[ext] && !configFiles[baseName] {
 			return nil
 		}
