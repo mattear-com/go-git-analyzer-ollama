@@ -72,13 +72,31 @@ func main() {
 	)
 	gitVCS := vcs.NewGitProvider()
 
-	// ── Analysis Engine (Strategy Pattern) ──────────────────────────────
+	// Helper: create AI provider with per-strategy model override
+	aiForStrategy := func(strategy string) *ai.OllamaProvider {
+		model := cfg.ModelForStrategy(strategy)
+		slog.Info("strategy model", "strategy", strategy, "model", model)
+		return ai.NewOllamaProvider(
+			ai.OllamaEndpointConfig{
+				BaseURL: cfg.OllamaEmbedURL,
+				Model:   cfg.OllamaEmbedModel,
+				Token:   cfg.OllamaEmbedToken,
+			},
+			ai.OllamaEndpointConfig{
+				BaseURL: cfg.OllamaChatURL,
+				Model:   model,
+				Token:   cfg.OllamaChatToken,
+			},
+		)
+	}
+
+	// ── Analysis Engine (Strategy Pattern) — each strategy can use a different model ──
 	engine := port.NewAnalysisEngine(
-		analysis.NewArchitectureStrategy(ollamaAI),
-		analysis.NewCodeQualityStrategy(ollamaAI),
-		analysis.NewFunctionalityStrategy(ollamaAI),
-		analysis.NewDevOpsStrategy(ollamaAI),
-		analysis.NewSecurityStrategy(ollamaAI),
+		analysis.NewArchitectureStrategy(aiForStrategy("architecture")),
+		analysis.NewCodeQualityStrategy(aiForStrategy("code_quality")),
+		analysis.NewFunctionalityStrategy(aiForStrategy("functionality")),
+		analysis.NewDevOpsStrategy(aiForStrategy("devops")),
+		analysis.NewSecurityStrategy(aiForStrategy("security")),
 	)
 
 	// ── Services ─────────────────────────────────────────────────────────
@@ -142,7 +160,7 @@ func main() {
 	reportsHandler := handler.NewReportsHandler(pgStore, vectorStore)
 	reportsHandler.Register(api)
 
-	chatHandler := handler.NewChatHandler(ollamaAI, pgStore)
+	chatHandler := handler.NewChatHandler(aiForStrategy("chat"), pgStore)
 	chatHandler.Register(api)
 
 	ragHandler := handler.NewRAGHandler(ragService)

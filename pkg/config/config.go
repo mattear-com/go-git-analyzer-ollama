@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 )
@@ -39,6 +38,14 @@ type Config struct {
 	OllamaChatURL   string
 	OllamaChatModel string
 	OllamaChatToken string // Bearer token for Ollama Cloud (empty = local)
+
+	// Per-strategy model overrides (fall back to OllamaChatModel if empty)
+	ModelArchitecture  string
+	ModelCodeQuality   string
+	ModelFunctionality string
+	ModelDevOps        string
+	ModelSecurity      string
+	ModelChat          string // for interactive chat
 
 	EmbeddingDimension int
 
@@ -81,6 +88,13 @@ func Load() *Config {
 		OllamaChatModel: envOrDefault("OLLAMA_CHAT_MODEL", "qwen3"),
 		OllamaChatToken: os.Getenv("OLLAMA_CHAT_TOKEN"),
 
+		ModelArchitecture:  os.Getenv("OLLAMA_MODEL_ARCHITECTURE"),
+		ModelCodeQuality:   os.Getenv("OLLAMA_MODEL_CODE_QUALITY"),
+		ModelFunctionality: os.Getenv("OLLAMA_MODEL_FUNCTIONALITY"),
+		ModelDevOps:        os.Getenv("OLLAMA_MODEL_DEVOPS"),
+		ModelSecurity:      os.Getenv("OLLAMA_MODEL_SECURITY"),
+		ModelChat:          os.Getenv("OLLAMA_MODEL_CHAT"),
+
 		EmbeddingDimension: envOrDefaultInt("EMBEDDING_DIMENSION", 1024),
 
 		CloneBasePath: envOrDefault("CLONE_BASE_PATH", "/tmp/codelens-repos"),
@@ -94,7 +108,31 @@ func Load() *Config {
 
 // DSN returns a formatted connection string for logging (password masked).
 func (c *Config) DSN() string {
-	return fmt.Sprintf("postgres://***@***/codelens (from DATABASE_URL)")
+	return "postgres://***@***/codelens (from DATABASE_URL)"
+}
+
+// ModelForStrategy returns the model to use for a given strategy.
+// Falls back to OllamaChatModel if no per-strategy override is configured.
+func (c *Config) ModelForStrategy(strategy string) string {
+	var m string
+	switch strategy {
+	case "architecture":
+		m = c.ModelArchitecture
+	case "code_quality":
+		m = c.ModelCodeQuality
+	case "functionality":
+		m = c.ModelFunctionality
+	case "devops":
+		m = c.ModelDevOps
+	case "security":
+		m = c.ModelSecurity
+	case "chat":
+		m = c.ModelChat
+	}
+	if m != "" {
+		return m
+	}
+	return c.OllamaChatModel
 }
 
 func envOrDefault(key, fallback string) string {
